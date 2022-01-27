@@ -33,7 +33,7 @@ void ConfigMgr::startOrStopService(const std::string& service, bool start)
 {
     std::ostringstream oss;
     oss << "ConfigMgr::startOrStopService " << service; 
-    log<level::INFO>(oss.str().c_str());
+    log<level::ERR>(oss.str().c_str());
     if (start)
     {
         restartService(service);
@@ -48,7 +48,7 @@ void ConfigMgr::restartService(const std::string& service)
 {
     std::ostringstream oss;
     oss << "ConfigMgr::restartService " << service; 
-    log<level::INFO>(oss.str().c_str());
+    log<level::ERR>(oss.str().c_str());
     try
     {
         auto method = bus.new_method_call(SYSTEMD_BUSNAME, SYSTEMD_PATH,
@@ -68,7 +68,7 @@ void ConfigMgr::stopService(const std::string& service)
 {
     std::ostringstream oss;
     oss << "ConfigMgr::stopService " << service; 
-    log<level::INFO>(oss.str().c_str());
+    log<level::ERR>(oss.str().c_str());
     try
     {
         auto method = bus.new_method_call(SYSTEMD_BUSNAME, SYSTEMD_PATH,
@@ -99,7 +99,7 @@ std::string ConfigMgr::createConfig(
         << " ldapBindDNPassword: " << ldapBindDNPassword
         << " groupNameAttribute: " << groupNameAttribute
         << " userNameAttribute: " << userNameAttribute;
-    log<level::INFO>(oss.str().c_str());
+    log<level::ERR>(oss.str().c_str());
 
     bool secureLDAP = false;
 
@@ -158,7 +158,7 @@ std::string ConfigMgr::createConfig(
             << " tlsCacertFile: " << tlsCacertFile
             << " tlsCertFile: " << tlsCertFile
             << " secureLDAP: " << secureLDAP;
-        log<level::INFO>(oss.str().c_str());
+        log<level::ERR>(oss.str().c_str());
         openLDAPConfigPtr.reset(nullptr);
         objPath = openLDAPDbusObjectPath;
         openLDAPConfigPtr = std::make_unique<Config>(
@@ -178,7 +178,7 @@ std::string ConfigMgr::createConfig(
             << " tlsCacertFile: " << tlsCacertFile
             << " tlsCertFile: " << tlsCertFile
             << " secureLDAP: " << secureLDAP;
-        log<level::INFO>(oss.str().c_str());
+        log<level::ERR>(oss.str().c_str());
         ADConfigPtr.reset(nullptr);
         objPath = ADDbusObjectPath;
         ADConfigPtr = std::make_unique<Config>(
@@ -203,7 +203,7 @@ void ConfigMgr::createDefaultObjects()
             << " configFilePath: " << configFilePath
             << " tlsCacertFile: " << tlsCacertFile
             << " tlsCertFile: " << tlsCertFile;
-        log<level::INFO>(oss.str().c_str());
+        log<level::ERR>(oss.str().c_str());
         openLDAPConfigPtr = std::make_unique<Config>(
             bus, openLDAPDbusObjectPath.c_str(), configFilePath.c_str(),
             tlsCacertFile.c_str(), tlsCertFile.c_str(),
@@ -218,7 +218,7 @@ void ConfigMgr::createDefaultObjects()
             << " configFilePath: " << configFilePath
             << " tlsCacertFile: " << tlsCacertFile
             << " tlsCertFile: " << tlsCertFile;
-        log<level::INFO>(oss.str().c_str());
+        log<level::ERR>(oss.str().c_str());
         ADConfigPtr = std::make_unique<Config>(
             bus, ADDbusObjectPath.c_str(), configFilePath.c_str(),
             tlsCacertFile.c_str(), tlsCertFile.c_str(),
@@ -233,7 +233,7 @@ bool ConfigMgr::enableService(Config& config, bool value)
     {
         std::ostringstream oss;
         oss << "ConfigMgr::enableService true";
-        log<level::INFO>(oss.str().c_str());
+        log<level::ERR>(oss.str().c_str());
         if (openLDAPConfigPtr && openLDAPConfigPtr->enabled())
         {
             elog<NotAllowed>(NotAllowedArgument::REASON(
@@ -252,7 +252,7 @@ void ConfigMgr::restore()
 {
     std::ostringstream oss;
     oss << "ConfigMgr::restore";
-    log<level::INFO>(oss.str().c_str());
+    log<level::ERR>(oss.str().c_str());
     createDefaultObjects();
     // Restore the ldap config and their mappings
     if (ADConfigPtr->deserialize())
