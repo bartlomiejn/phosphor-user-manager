@@ -134,6 +134,9 @@ static std::vector<std::string> executeCmd(const char* path,
 
 static std::string getCSVFromVector(std::vector<std::string> vec)
 {
+    std::ostringstream oss;
+    oss << "UserMgr::getCSVFromVector";
+    log<level::ERR>(oss.str().c_str());
     switch (vec.size())
     {
         case 0:
@@ -159,6 +162,9 @@ static std::string getCSVFromVector(std::vector<std::string> vec)
 
 static bool removeStringFromCSV(std::string& csvStr, const std::string& delStr)
 {
+    std::ostringstream oss;
+    oss << "UserMgr::removeStringFromCSV " << csvStr << " delStr " << delStr;
+    log<level::ERR>(oss.str().c_str());
     std::string::size_type delStrPos = csvStr.find(delStr);
     if (delStrPos != std::string::npos)
     {
@@ -178,6 +184,9 @@ static bool removeStringFromCSV(std::string& csvStr, const std::string& delStr)
 
 bool UserMgr::isUserExist(const std::string& userName)
 {
+    std::ostringstream oss;
+    oss << "UserMgr::isUserExist " << userName;
+    log<level::ERR>(oss.str().c_str());
     if (userName.empty())
     {
         log<level::ERR>("User name is empty");
@@ -193,6 +202,9 @@ bool UserMgr::isUserExist(const std::string& userName)
 
 void UserMgr::throwForUserDoesNotExist(const std::string& userName)
 {
+    std::ostringstream oss;
+    oss << "UserMgr::throwForUserDoesNotExist " << userName;
+    log<level::ERR>(oss.str().c_str());
     if (isUserExist(userName) == false)
     {
         log<level::ERR>("User does not exist",
@@ -203,6 +215,9 @@ void UserMgr::throwForUserDoesNotExist(const std::string& userName)
 
 void UserMgr::throwForUserExists(const std::string& userName)
 {
+    std::ostringstream oss;
+    oss << "UserMgr::throwForUserExists " << userName;
+    log<level::ERR>(oss.str().c_str());
     if (isUserExist(userName) == true)
     {
         log<level::ERR>("User already exists",
@@ -214,6 +229,9 @@ void UserMgr::throwForUserExists(const std::string& userName)
 void UserMgr::throwForUserNameConstraints(
     const std::string& userName, const std::vector<std::string>& groupNames)
 {
+    std::ostringstream oss;
+    oss << "UserMgr::throwForUserNameConstraints " << userName;
+    log<level::ERR>(oss.str().c_str());
     if (std::find(groupNames.begin(), groupNames.end(), "ipmi") !=
         groupNames.end())
     {
@@ -246,6 +264,9 @@ void UserMgr::throwForUserNameConstraints(
 void UserMgr::throwForMaxGrpUserCount(
     const std::vector<std::string>& groupNames)
 {
+    std::ostringstream oss;
+    oss << "UserMgr::throwForMaxGrpUserCount ";
+    log<level::ERR>(oss.str().c_str());
     if (std::find(groupNames.begin(), groupNames.end(), "ipmi") !=
         groupNames.end())
     {
@@ -273,6 +294,9 @@ void UserMgr::throwForMaxGrpUserCount(
 
 void UserMgr::throwForInvalidPrivilege(const std::string& priv)
 {
+    std::ostringstream oss;
+    oss << "UserMgr::throwForInvalidPrivilege " << priv;
+    log<level::ERR>(oss.str().c_str());
     if (!priv.empty() &&
         (std::find(privMgr.begin(), privMgr.end(), priv) == privMgr.end()))
     {
@@ -284,6 +308,9 @@ void UserMgr::throwForInvalidPrivilege(const std::string& priv)
 
 void UserMgr::throwForInvalidGroups(const std::vector<std::string>& groupNames)
 {
+    std::ostringstream oss;
+    oss << "UserMgr::throwForInvalidGroups";
+    log<level::ERR>(oss.str().c_str());
     for (auto& group : groupNames)
     {
         if (std::find(groupsMgr.begin(), groupsMgr.end(), group) ==
@@ -301,7 +328,7 @@ void UserMgr::createUser(std::string userName,
                          bool enabled)
 {
     std::ostringstream oss;
-    oss << "user::createUser " << userName << " priv: " << priv << " enabled: " << enabled;
+    oss << "UserMgr::createUser " << userName << " priv: " << priv << " enabled: " << enabled;
     log<level::ERR>(oss.str().c_str());
     throwForInvalidPrivilege(priv);
     throwForInvalidGroups(groupNames);
@@ -352,7 +379,7 @@ void UserMgr::createUser(std::string userName,
 void UserMgr::deleteUser(std::string userName)
 {
     std::ostringstream oss;
-    oss << "user::deleteUser " << userName;
+    oss << "UserMgr::deleteUser " << userName;
     log<level::ERR>(oss.str().c_str());
     // All user management lock has to be based on /etc/shadow
     // TODO  phosphor-user-manager#10 phosphor::user::shadow::Lock lock{};
@@ -378,7 +405,7 @@ void UserMgr::deleteUser(std::string userName)
 void UserMgr::renameUser(std::string userName, std::string newUserName)
 {
     std::ostringstream oss;
-    oss << "user::renameUser " << userName << " " << newUserName;
+    oss << "UserMgr::renameUser " << userName << " " << newUserName;
     log<level::ERR>(oss.str().c_str());
     // All user management lock has to be based on /etc/shadow
     // TODO  phosphor-user-manager#10 phosphor::user::shadow::Lock lock{};
@@ -420,7 +447,7 @@ void UserMgr::updateGroupsAndPriv(const std::string& userName,
                                   const std::string& priv)
 {
     std::ostringstream oss;
-    oss << "user::updateGroupsAndPriv " << userName << " priv: " << priv;
+    oss << "UserMgr::updateGroupsAndPriv " << userName << " priv: " << priv;
     log<level::ERR>(oss.str().c_str());
     throwForInvalidPrivilege(priv);
     throwForInvalidGroups(groupNames);
@@ -522,7 +549,7 @@ uint16_t UserMgr::maxLoginAttemptBeforeLockout(uint16_t value)
 uint32_t UserMgr::accountUnlockTimeout(uint32_t value)
 {
     std::ostringstream oss;
-    oss << "user::accountUnlockTimeout " << value;
+    oss << "UserMgr::accountUnlockTimeout " << value;
     log<level::ERR>(oss.str().c_str());
     if (value == AccountPolicyIface::accountUnlockTimeout())
     {
@@ -542,7 +569,7 @@ int UserMgr::getPamModuleArgValue(const std::string& moduleName,
                                   std::string& argValue)
 {
     std::ostringstream oss;
-    oss << "user::getPamModuleArgValue moduleName: " << moduleName << " argName: " << argName << " argValue: " << argValue; 
+    oss << "UserMgr::getPamModuleArgValue moduleName: " << moduleName << " argName: " << argName << " argValue: " << argValue; 
     log<level::ERR>(oss.str().c_str());
     std::string fileName;
     if (moduleName == pamTally2)
@@ -598,7 +625,7 @@ int UserMgr::setPamModuleArgValue(const std::string& moduleName,
                                   const std::string& argValue)
 {
     std::ostringstream oss;
-    oss << "user::setPamModuleArgValue moduleName: " << moduleName << " argName: " << argName << " argValue: " << argValue; 
+    oss << "UserMgr::setPamModuleArgValue moduleName: " << moduleName << " argName: " << argName << " argValue: " << argValue; 
     log<level::ERR>(oss.str().c_str());
     std::string fileName;
     if (moduleName == pamTally2)
@@ -669,7 +696,7 @@ int UserMgr::setPamModuleArgValue(const std::string& moduleName,
 void UserMgr::userEnable(const std::string& userName, bool enabled)
 {
     std::ostringstream oss;
-    oss << "user::userEnable userName: " << userName << " enabled: " << enabled; 
+    oss << "UserMgr::userEnable userName: " << userName << " enabled: " << enabled; 
     log<level::ERR>(oss.str().c_str());
     // All user management lock has to be based on /etc/shadow
     // TODO  phosphor-user-manager#10 phosphor::user::shadow::Lock lock{};
@@ -704,6 +731,9 @@ static constexpr size_t t2OutputIndex = 1;
 
 bool UserMgr::userLockedForFailedAttempt(const std::string& userName)
 {
+    std::ostringstream oss;
+    oss << "UserMgr::userLockedForFailedAttempt userName: " << userName; 
+    log<level::ERR>(oss.str().c_str());
     // All user management lock has to be based on /etc/shadow
     // TODO  phosphor-user-manager#10 phosphor::user::shadow::Lock lock{};
     std::vector<std::string> output;
@@ -742,6 +772,9 @@ bool UserMgr::userLockedForFailedAttempt(const std::string& userName)
 bool UserMgr::userLockedForFailedAttempt(const std::string& userName,
                                          const bool& value)
 {
+    std::ostringstream oss;
+    oss << "UserMgr::userLockedForFailedAttempt userName: " << userName; 
+    log<level::ERR>(oss.str().c_str());
     // All user management lock has to be based on /etc/shadow
     // TODO  phosphor-user-manager#10 phosphor::user::shadow::Lock lock{};
     std::vector<std::string> output;
@@ -761,6 +794,9 @@ bool UserMgr::userLockedForFailedAttempt(const std::string& userName,
 
 bool UserMgr::userPasswordExpired(const std::string& userName)
 {
+    std::ostringstream oss;
+    oss << "UserMgr::userPasswordExpired userName: " << userName; 
+    log<level::ERR>(oss.str().c_str());
     // All user management lock has to be based on /etc/shadow
     // TODO  phosphor-user-manager#10 phosphor::user::shadow::Lock lock{};
 
@@ -806,6 +842,9 @@ bool UserMgr::userPasswordExpired(const std::string& userName)
 
 UserSSHLists UserMgr::getUserAndSshGrpList()
 {
+    std::ostringstream oss;
+    oss << "UserMgr::getUserAndSshGrpList "; 
+    log<level::ERR>(oss.str().c_str());
     // All user management lock has to be based on /etc/shadow
     // TODO  phosphor-user-manager#10 phosphor::user::shadow::Lock lock{};
 
@@ -858,12 +897,18 @@ UserSSHLists UserMgr::getUserAndSshGrpList()
 
 size_t UserMgr::getIpmiUsersCount()
 {
+    std::ostringstream oss;
+    oss << "UserMgr::getIpmiUsersCount "; 
+    log<level::ERR>(oss.str().c_str());
     std::vector<std::string> userList = getUsersInGroup("ipmi");
     return userList.size();
 }
 
 bool UserMgr::isUserEnabled(const std::string& userName)
 {
+    std::ostringstream oss;
+    oss << "UserMgr::isUserEnabled " << userName; 
+    log<level::ERR>(oss.str().c_str());
     // All user management lock has to be based on /etc/shadow
     // TODO  phosphor-user-manager#10 phosphor::user::shadow::Lock lock{};
     std::array<char, 4096> buffer{};
@@ -884,6 +929,9 @@ bool UserMgr::isUserEnabled(const std::string& userName)
 
 std::vector<std::string> UserMgr::getUsersInGroup(const std::string& groupName)
 {
+    std::ostringstream oss;
+    oss << "UserMgr::getUsersInGroup " << groupName; 
+    log<level::ERR>(oss.str().c_str());
     std::vector<std::string> usersInGroup;
     // Should be more than enough to get the pwd structure.
     std::array<char, 4096> buffer{};
@@ -912,7 +960,7 @@ std::vector<std::string> UserMgr::getUsersInGroup(const std::string& groupName)
 DbusUserObj UserMgr::getPrivilegeMapperObject(void)
 {
     std::ostringstream oss;
-    oss << "user::getPrivilegeMapperObject"; 
+    oss << "UserMgr::getPrivilegeMapperObject"; 
     log<level::ERR>(oss.str().c_str());
     DbusUserObj objects;
     try
@@ -947,6 +995,9 @@ DbusUserObj UserMgr::getPrivilegeMapperObject(void)
 
 std::string UserMgr::getLdapGroupName(const std::string& userName)
 {
+    std::ostringstream oss;
+    oss << "UserMgr::getLdapGroupName " << userName; 
+    log<level::ERR>(oss.str().c_str());
     struct passwd pwd
     {};
     struct passwd* pwdPtr = nullptr;
@@ -994,6 +1045,9 @@ std::string UserMgr::getLdapGroupName(const std::string& userName)
 
 std::string UserMgr::getServiceName(std::string&& path, std::string&& intf)
 {
+    std::ostringstream oss;
+    oss << "UserMgr::getServiceName " << path << " intf: " << intf; 
+    log<level::ERR>(oss.str().c_str());
     auto mapperCall = bus.new_method_call(objMapperService, objMapperPath,
                                           objMapperInterface, "GetObject");
 
@@ -1022,6 +1076,9 @@ std::string UserMgr::getServiceName(std::string&& path, std::string&& intf)
 
 UserInfoMap UserMgr::getUserInfo(std::string userName)
 {
+    std::ostringstream oss;
+    oss << "UserMgr::getUserInfo " << userName; 
+    log<level::ERR>(oss.str().c_str());
     UserInfoMap userInfo;
     // Check whether the given user is local user or not.
     if (isUserExist(userName) == true)
@@ -1134,6 +1191,9 @@ UserInfoMap UserMgr::getUserInfo(std::string userName)
 
 void UserMgr::initUserObjects(void)
 {
+    std::ostringstream oss;
+    oss << "UserMgr::initUserObjects "; 
+    log<level::ERR>(oss.str().c_str());
     // All user management lock has to be based on /etc/shadow
     // TODO  phosphor-user-manager#10 phosphor::user::shadow::Lock lock{};
     std::vector<std::string> userNameList;
