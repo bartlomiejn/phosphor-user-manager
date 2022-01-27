@@ -106,7 +106,7 @@ static std::vector<std::string> executeCmd(const char* path,
 {
     std::ostringstream oss;
     oss << "user::executeCmd " << path;
-    log<level::INFO>(oss.str().c_str());
+    log<level::ERR>(oss.str().c_str());
     std::vector<std::string> stdOutput;
     boost::process::ipstream stdOutStream;
     boost::process::child execProg(path, const_cast<char*>(tArgs)...,
@@ -302,7 +302,7 @@ void UserMgr::createUser(std::string userName,
 {
     std::ostringstream oss;
     oss << "user::createUser " << userName << " priv: " << priv << " enabled: " << enabled;
-    log<level::INFO>(oss.str().c_str());
+    log<level::ERR>(oss.str().c_str());
     throwForInvalidPrivilege(priv);
     throwForInvalidGroups(groupNames);
     // All user management lock has to be based on /etc/shadow
@@ -344,7 +344,7 @@ void UserMgr::createUser(std::string userName,
         userName, std::move(std::make_unique<phosphor::user::Users>(
                       bus, userObj.c_str(), groupNames, priv, enabled, *this)));
 
-    log<level::INFO>("User created successfully",
+    log<level::ERR>("User created successfully",
                      entry("USER_NAME=%s", userName.c_str()));
     return;
 }
@@ -353,7 +353,7 @@ void UserMgr::deleteUser(std::string userName)
 {
     std::ostringstream oss;
     oss << "user::deleteUser " << userName;
-    log<level::INFO>(oss.str().c_str());
+    log<level::ERR>(oss.str().c_str());
     // All user management lock has to be based on /etc/shadow
     // TODO  phosphor-user-manager#10 phosphor::user::shadow::Lock lock{};
     throwForUserDoesNotExist(userName);
@@ -370,7 +370,7 @@ void UserMgr::deleteUser(std::string userName)
 
     usersList.erase(userName);
 
-    log<level::INFO>("User deleted successfully",
+    log<level::ERR>("User deleted successfully",
                      entry("USER_NAME=%s", userName.c_str()));
     return;
 }
@@ -379,7 +379,7 @@ void UserMgr::renameUser(std::string userName, std::string newUserName)
 {
     std::ostringstream oss;
     oss << "user::renameUser " << userName << " " << newUserName;
-    log<level::INFO>(oss.str().c_str());
+    log<level::ERR>(oss.str().c_str());
     // All user management lock has to be based on /etc/shadow
     // TODO  phosphor-user-manager#10 phosphor::user::shadow::Lock lock{};
     throwForUserDoesNotExist(userName);
@@ -421,7 +421,7 @@ void UserMgr::updateGroupsAndPriv(const std::string& userName,
 {
     std::ostringstream oss;
     oss << "user::updateGroupsAndPriv " << userName << " priv: " << priv;
-    log<level::INFO>(oss.str().c_str());
+    log<level::ERR>(oss.str().c_str());
     throwForInvalidPrivilege(priv);
     throwForInvalidGroups(groupNames);
     // All user management lock has to be based on /etc/shadow
@@ -465,7 +465,7 @@ void UserMgr::updateGroupsAndPriv(const std::string& userName,
         elog<InternalFailure>();
     }
 
-    log<level::INFO>("User groups / privilege updated successfully",
+    log<level::ERR>("User groups / privilege updated successfully",
                      entry("USER_NAME=%s", userName.c_str()));
     return;
 }
@@ -523,7 +523,7 @@ uint32_t UserMgr::accountUnlockTimeout(uint32_t value)
 {
     std::ostringstream oss;
     oss << "user::accountUnlockTimeout " << value;
-    log<level::INFO>(oss.str().c_str());
+    log<level::ERR>(oss.str().c_str());
     if (value == AccountPolicyIface::accountUnlockTimeout())
     {
         return value;
@@ -543,7 +543,7 @@ int UserMgr::getPamModuleArgValue(const std::string& moduleName,
 {
     std::ostringstream oss;
     oss << "user::getPamModuleArgValue moduleName: " << moduleName << " argName: " << argName << " argValue: " << argValue; 
-    log<level::INFO>(oss.str().c_str());
+    log<level::ERR>(oss.str().c_str());
     std::string fileName;
     if (moduleName == pamTally2)
     {
@@ -599,7 +599,7 @@ int UserMgr::setPamModuleArgValue(const std::string& moduleName,
 {
     std::ostringstream oss;
     oss << "user::setPamModuleArgValue moduleName: " << moduleName << " argName: " << argName << " argValue: " << argValue; 
-    log<level::INFO>(oss.str().c_str());
+    log<level::ERR>(oss.str().c_str());
     std::string fileName;
     if (moduleName == pamTally2)
     {
@@ -670,7 +670,7 @@ void UserMgr::userEnable(const std::string& userName, bool enabled)
 {
     std::ostringstream oss;
     oss << "user::userEnable userName: " << userName << " enabled: " << enabled; 
-    log<level::INFO>(oss.str().c_str());
+    log<level::ERR>(oss.str().c_str());
     // All user management lock has to be based on /etc/shadow
     // TODO  phosphor-user-manager#10 phosphor::user::shadow::Lock lock{};
     throwForUserDoesNotExist(userName);
@@ -685,7 +685,7 @@ void UserMgr::userEnable(const std::string& userName, bool enabled)
         elog<InternalFailure>();
     }
 
-    log<level::INFO>("User enabled/disabled state updated successfully",
+    log<level::ERR>("User enabled/disabled state updated successfully",
                      entry("USER_NAME=%s", userName.c_str()),
                      entry("ENABLED=%d", enabled));
     return;
@@ -913,7 +913,7 @@ DbusUserObj UserMgr::getPrivilegeMapperObject(void)
 {
     std::ostringstream oss;
     oss << "user::getPrivilegeMapperObject"; 
-    log<level::INFO>(oss.str().c_str());
+    log<level::ERR>(oss.str().c_str());
     DbusUserObj objects;
     try
     {
